@@ -1,5 +1,5 @@
-import TimeUtil
-import MathUtil
+from pyCreative import TimeUtil
+from pyCreative import MathUtil
 
 class ScheduledAction:
     def isTriggered(self):

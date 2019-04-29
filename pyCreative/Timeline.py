@@ -1,5 +1,5 @@
-import TimeUtil
-from Action import SimpleAction
+from pyCreative import TimeUtil
+from pyCreative.Action import SimpleAction
 
 class Timeline:
     def __init__(self):
