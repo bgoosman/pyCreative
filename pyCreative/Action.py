@@ -2,11 +2,25 @@ from pyCreative import TimeUtil
 from pyCreative import MathUtil
 
 class ScheduledAction:
-    def isTriggered(self):
-        return TimeUtil.isInThePast(self.triggerMicros)
+    def __init__(self):
+        self.triggerBeat = None
+        self.triggerTime = None
+
+    def triggerOnBeat(self, beat):
+        self.triggerBeat = beat
+
+    def triggerInSeconds(self, seconds):
+        self.triggerTime = TimeUtil.now() + seconds
+
+    def isTriggered(self, currentBeat):
+        if self.triggerTime is not None:
+            return self.triggerTime < TimeUtil.now()
+        elif self.triggerBeat is not None:
+            return self.triggerBeat <= currentBeat
 
 class SimpleAction(ScheduledAction):
     def __init__(self, lambdaFunction):
+        ScheduledAction.__init__(self)
         self.lambdaFunction = lambdaFunction
 
     def isDone(self):
@@ -22,19 +36,18 @@ class LerpAction(ScheduledAction):
     def __init__(self, durationSeconds, updateFunction, min, max):
         self.startTime = None
         self.endTime = None
-        self.durationMicros = TimeUtil.toMicros(durationSeconds)
+        self.duration = durationSeconds
         self.updateFunction = updateFunction
         self.min = min
         self.max = max
 
     def isDone(self):
-        return TimeUtil.nowMicros() > self.endTime
+        return TimeUtil.now() > self.endTime
 
     def start(self):
-        self.startTime = TimeUtil.nowMicros()
-        self.endTime = self.startTime + self.durationMicros
+        self.startTime = TimeUtil.now()
+        self.endTime = self.startTime + self.duration
 
     def update(self):
-        now = TimeUtil.nowMicros()
-        value = MathUtil.map(now, self.startTime, self.endTime, self.min, self.max)
+        value = MathUtil.map(TimeUtil.now(), self.startTime, self.endTime, self.min, self.max)
         self.updateFunction(value)
