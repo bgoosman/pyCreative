@@ -1,6 +1,18 @@
 import time
 
-from pyCreative.Action import SimpleAction
+from pyCreative.Action import *
+
+class Beats:
+    def __init__(self, beats):
+        self.beats = beats
+
+class Time:
+    def __init__(self, seconds):
+        self.seconds = seconds
+
+class Seconds(Time):
+    def __init__(self, seconds):
+        Time.__init__(self, seconds)
 
 class Timeline:
     def __init__(self, ableton):
@@ -49,27 +61,33 @@ class Timeline:
     def clearRunningActions(self):
         self.running = []
 
-    def cue(self, f=None, action=None):
-        if f is not None:
-            f()
-        elif action is not None:
+    def wrap(self, action):
+        # Wrap action in SimpleAction if is not already
+        return SimpleAction(action) if callable(action) else action
+
+    def cue(self, action):
+        if callable(action):
+            action()
+        elif isinstance(action, ScheduledAction):
             self.running.append(action)
             action.start()
+        else:
+            print('Unknown action type {}'.format(str(action)))
 
-    def cueInSeconds(self, seconds: float, f=None, action=None):
-        if f is not None:
-            action = SimpleAction(f)
-            action.triggerInSeconds(seconds)
-            self.queued.append(action)
-        elif action is not None:
-            action.triggerInSeconds(seconds)
-            self.queued.append(action)
+    def cueIn(self, duration, action):
+        if isinstance(duration, Beats):
+            self.cueInBeats(duration.beats, action)
+        elif isinstance(duration, Time):
+            self.cueInSeconds(duration.seconds, action)
+        else:
+            print('Unknown type of duration {}'.format(str(duration)))
 
-    def cueInBeats(self, beats: int, f=None, action=None):
-        if f is not None:
-            action = SimpleAction(f)
-            action.triggerOnBeat(self.beat + beats)
-            self.queued.append(action)
-        elif action is not None:
-            action.triggerOnBeat(self.beat + beats)
-            self.queued.append(action)
+    def cueInSeconds(self, seconds: float, action):
+        action = self.wrap(action)
+        action.triggerInSeconds(seconds)
+        self.queued.append(action)
+
+    def cueInBeats(self, beats: int, action):
+        action = self.wrap(action)
+        action.triggerOnBeat(self.beat + beats)
+        self.queued.append(action)
