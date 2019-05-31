@@ -19,14 +19,17 @@ class VideoHeader:
             self.index = len(self.videoBuffer) + self.index
 
     def advance(self):
-        self.index += 1
-        if self.index == len(self.videoBuffer):
-            self.index = 0
+        nextIndex = self.index + 1
+        if nextIndex == len(self.videoBuffer):
+            nextIndex = 0
+        if self.videoBuffer.get(nextIndex) is not None:
+            self.index = nextIndex
 
     def start(self):
         if self.timer is not None:
             self.timer.stop()
             self.timer = None
+        self.index = self.videoBuffer.index
         self.timer = QTimer()
         self.timer.timeout.connect(self.advance)
         self.timer.start(1000.0 / self.videoBuffer.get_max_fps())
