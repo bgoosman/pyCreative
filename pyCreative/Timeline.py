@@ -48,7 +48,7 @@ class Timeline:
             if action.isTriggered(self.beat):
                 action.start()
                 self.running.append(action)
-        self.queued = [action for action in self.queued if not action.isTriggered(self.beat)]
+        self.queued = [action for action in self.queued if not action.running]
 
     def updateRunningActions(self):
         for action in self.running:
@@ -75,6 +75,8 @@ class Timeline:
             print('Unknown action type {}'.format(str(action)))
 
     def cueIn(self, duration, action):
+        if isinstance(action, SimpleAction) and action.isCycleAction:
+            self.queued = [x for x in self.queued if not x.isCycleAction]
         if isinstance(duration, Beats):
             self.cueInBeats(duration.beats, action)
         elif isinstance(duration, Time):

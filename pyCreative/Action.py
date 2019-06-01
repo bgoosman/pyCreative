@@ -5,6 +5,8 @@ class ScheduledAction:
     def __init__(self):
         self.triggerBeat = None
         self.triggerTime = None
+        self.isCycleAction = False
+        self.running = False
 
     def triggerOnBeat(self, beat):
         self.triggerBeat = beat
@@ -27,6 +29,7 @@ class SimpleAction(ScheduledAction):
         return True
 
     def start(self):
+        self.running = True
         self.lambdaFunction()
 
     def update(self):
@@ -34,17 +37,20 @@ class SimpleAction(ScheduledAction):
 
 class LerpAction(ScheduledAction):
     def __init__(self, durationSeconds, updateFunction, min, max):
+        self.isCycleAction = False
         self.startTime = None
         self.endTime = None
         self.duration = durationSeconds
         self.updateFunction = updateFunction
         self.min = min
         self.max = max
+        self.running = False
 
     def isDone(self):
         return TimeUtil.now() > self.endTime
 
     def start(self):
+        self.running = True
         self.startTime = TimeUtil.now()
         self.endTime = self.startTime + self.duration
 
