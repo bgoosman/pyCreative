@@ -24,11 +24,11 @@ class Ableton(threading.Thread):
     def run(self):
         while self.running:
             self.link.update_status()
-            time.sleep(0.05)
+            time.sleep(0.075)
 
     def cleanup(self):
         self.running = False
-        self.link.stop()
+        self.link.cleanup()
         self.stop()
 
     def scan(self):
