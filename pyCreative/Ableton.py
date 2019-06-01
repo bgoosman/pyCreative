@@ -24,7 +24,7 @@ class Ableton(threading.Thread):
     def run(self):
         while self.running:
             self.link.update_status()
-            time.sleep(0.1)
+            time.sleep(0.05)
 
     def cleanup(self):
         self.running = False
@@ -39,9 +39,11 @@ class Ableton(threading.Thread):
 
     def play(self):
         self.set.play()
+        self.link.play()
 
     def stop(self):
         self.set.stop()
+        self.link.stop()
 
     def mute(self):
         self.getTrack('Master').volume = 0
@@ -65,7 +67,7 @@ class Ableton(threading.Thread):
         return self.set.get_track(name)
 
     def addBeatCallback(self, callback):
-        self.set.add_beat_callback(callback)
+        self.link.add_beat_callback(callback)
 
     def zeroAllTrackVolumes(self):
         for track in self.set.tracks:
