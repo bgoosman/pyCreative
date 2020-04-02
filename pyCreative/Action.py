@@ -35,8 +35,21 @@ class SimpleAction(ScheduledAction):
     def update(self):
         pass
 
+class InstantLerpAction(ScheduledAction):
+    def __init__(self, updateFunction, min, max):
+        ScheduledAction.__init__(self)
+        self.updateFunction = updateFunction
+        self.min = min
+        self.max = max
+        self.step = 0.01
+
+    def start(self):
+        self.updateFunction(self.min)
+        self.updateFunction(self.max)
+
 class LerpAction(ScheduledAction):
     def __init__(self, durationSeconds, updateFunction, min, max):
+        ScheduledAction.__init__(self)
         self.isCycleAction = False
         self.startTime = None
         self.endTime = None

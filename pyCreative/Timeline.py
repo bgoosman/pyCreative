@@ -1,6 +1,9 @@
 import time
+import heapq
+from functools import total_ordering
 
 from pyCreative.Action import *
+from pyCreative.MagicClass import *
 
 class Beats:
     def __init__(self, beats):
@@ -13,6 +16,58 @@ class Time:
 class Seconds(Time):
     def __init__(self, seconds):
         Time.__init__(self, seconds)
+
+@total_ordering
+class ComparableAction:
+    def __init__(self, seconds, action):
+        self.action = action
+        self.seconds = seconds
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)): return NotImplemented
+        return other.seconds == self.seconds
+
+    def __lt__(self, other):
+        if not isinstance(other, type(self)): return NotImplemented
+        return other.seconds > self.seconds
+
+class MockTimeline(MagicClass):
+    def __init__(self, ableton):
+        MagicClass.__init__(self, 'MockTimeline')
+        self.__dict__['timeline'] = []
+        self.__dict__['ableton'] = ableton
+
+    def cueIn(self, duration, action):
+        if isinstance(duration, Beats):
+            self.cueInSeconds(self.ableton.beatsToSeconds(duration.beats), action)
+        elif isinstance(duration, Time):
+            self.cueInSeconds(duration.seconds, action)
+        else:
+            print('Unknown type of duration {}'.format(str(duration)))
+
+    def cueInSeconds(self, seconds, action):
+        heapq.heappush(self.timeline, ComparableAction(seconds, action))
+
+    def cueInBeats(self, beats, action):
+        seconds = self.ableton.beatsToSeconds(beats)
+        self.cueInSeconds(seconds, action)
+
+    def isEmpty(self):
+        return len(self.timeline) == 0
+
+    def cueNextAction(self):
+        comparableAction = heapq.heappop(self.timeline)
+        self.cue(comparableAction.action)
+
+    def cue(self, action):
+        if callable(action):
+            action()
+        elif isinstance(action, ScheduledAction):
+            if action.isCycleAction:
+                return
+            action.start()
+        else:
+            print('Unknown action type {}'.format(str(action)))
 
 class Timeline:
     def __init__(self, ableton):

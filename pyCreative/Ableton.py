@@ -1,17 +1,34 @@
-import LinkToPy
-import live
 import threading
 import time
+from pyCreative.MagicClass import *
+
+class MockLink(MagicClass):
+    def __init__(self):
+        MagicClass.__init__(self, 'MockLink')
+        self.bpm_ = 0
+
+    def get_status_string(self):
+        return 'MockStatus'
+
+    def set_bpm(self, bpm):
+        self.bpm_ = bpm
+
+class MockSet(MagicClass):
+    def __init__(self):
+        MagicClass.__init__(self, 'MockSet')
+        self.tracks = []
 
 class Ableton(threading.Thread):
     MAX_FILTER_FREQUENCY = 135
     MIN_FILTER_FREQUENCY = 20
     ZERO_DB = 0.88
 
-    def __init__(self):
+    def __init__(self, link, set, simulate=False):
         threading.Thread.__init__(self)
-        self.link = LinkToPy.LinkInterface('/Applications/Carabiner')
-        self.set = live.Set()
+        self.link = link
+        self.set = set
+        self.simulate = simulate
+
         try:
             self.set.load()
         except Exception as e:
@@ -22,9 +39,10 @@ class Ableton(threading.Thread):
         self.running = True
 
     def run(self):
-        while self.running:
-            self.link.update_status()
-            time.sleep(1.0)
+        if not self.simulate:
+            while self.running:
+                self.link.update_status()
+                time.sleep(1.0)
 
     def cleanup(self):
         self.running = False
@@ -67,7 +85,7 @@ class Ableton(threading.Thread):
         return self.set.get_track(name)
 
     def addBeatCallback(self, callback):
-        self.live.add_beat_callback(callback)
+        self.link.add_beat_callback(callback)
 
     def zeroAllTrackVolumes(self):
         for track in self.set.tracks:

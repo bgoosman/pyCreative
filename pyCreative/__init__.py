@@ -8,3 +8,4 @@ from pyCreative.Timeline import *
 from pyCreative.TimeUtil import *
 from pyCreative.VideoBuffer import *
 from pyCreative.VideoHeader import *
+from pyCreative.MagicClass import *
