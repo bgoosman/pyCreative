@@ -3,9 +3,11 @@ from pyCreative.Action import *
 from pyCreative.DmxLightboard import *
 from pyCreative.GenericLightboard import *
 from pyCreative.EtcElement import *
+from pyCreative.Lightboard import *
 from pyCreative.MathUtil import *
 from pyCreative.Timeline import *
 from pyCreative.TimeUtil import *
+from pyCreative.MagicClass import *
 from pyCreative.VideoBuffer import *
 from pyCreative.VideoHeader import *
-from pyCreative.MagicClass import *
+from pyCreative.VideoStream import *
