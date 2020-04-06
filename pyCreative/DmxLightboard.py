@@ -1,6 +1,7 @@
 from dmxpy import DmxPy
+from pyCreative.Lightboard import *
 
-class DmxLightboard:
+class DmxLightboard(Lightboard):
     MAX_VALUE = 255
 
     def __init__(self, serialPort):
@@ -14,7 +15,6 @@ class DmxLightboard:
             self.dirty = False
 
     def setChannel(self, channel: int, value: int):
-        # print('setChannel {} @ {}'.format(channel, value))
         self.dirty = True
         self.dmx.setChannel(channel, value)
 

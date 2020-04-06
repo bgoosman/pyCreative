@@ -8,6 +8,8 @@ class MagicClass(object):
             wrapperName = "%s::%s" % (self.name, name)
             if len(args) > 0:
                 wrapperName += "(%s)" % (",".join(map(lambda x: str(x), args)))
+            if len(kwargs) > 0:
+                wrapperName += "%s" % kwargs
             return MagicClass(wrapperName)
         return wrapper
 
@@ -23,6 +25,9 @@ class MagicClass(object):
 
     def __rfloordiv__(self, other):
         return other
+
+    def __str__(self):
+        return self.name
 
     def log(self, message):
         print("%s::%s" % (self.name, message))
