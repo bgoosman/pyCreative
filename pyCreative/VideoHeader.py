@@ -35,4 +35,5 @@ class VideoHeader:
         self.timer.start(1000.0 / self.videoBuffer.get_max_fps())
 
     def stop(self):
-        self.timer.stop()
+        if self.timer:
+            self.timer.stop()
