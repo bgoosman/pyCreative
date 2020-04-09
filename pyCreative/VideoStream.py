@@ -1,5 +1,19 @@
 from pyCreative.VideoBuffer import *
 from pyCreative.VideoHeader import *
+from pyCreative.MagicClass import *
+
+class MockVideoStream(MagicClass):
+    def __init__(self, name, frame):
+        MagicClass.__init__(self, name)
+        self.__dict__['frame'] = frame
+
+    def getHead(self):
+        self.log('getHead')
+        return self.frame
+
+    def getLast(self):
+        self.log('getLast')
+        return self.frame
 
 class VideoStream:
     def __init__(self, videoCapture):

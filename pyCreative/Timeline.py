@@ -55,6 +55,9 @@ class MockTimeline(MagicClass):
     def isEmpty(self):
         return len(self.timeline) == 0
 
+    def update(self):
+        self.cueNextAction()
+
     def cueNextAction(self):
         comparableAction = heapq.heappop(self.timeline)
         self.cue(comparableAction.action)
