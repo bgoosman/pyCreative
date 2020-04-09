@@ -11,3 +11,4 @@ from pyCreative.MagicClass import *
 from pyCreative.VideoBuffer import *
 from pyCreative.VideoHeader import *
 from pyCreative.VideoStream import *
+from pyCreative.Observer import *
