@@ -91,8 +91,8 @@ class Ableton(threading.Thread):
         for track in self.set.tracks:
             track.volume = Ableton.ZERO_DB
 
-    def playClip(self, name):
-        track = self.set.get_track(name)
+    def playClip(self, name, trackName=None):
+        track = self.set.get_track(name if not trackName else trackName)
         if track:
             track.play_clip(name=name)
 
